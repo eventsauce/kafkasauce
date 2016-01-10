@@ -11,16 +11,15 @@ const lib = require('../lib');
 const chai = require('chai');
 const expect = chai.expect;
 
-describe('Library Exports', () => {
-  it('Should export correct number of symbols', () => {
-    expect(Object.keys(lib).length).to.equal(2);
-  });
+describe('KafkaEventWriter', () => {
+  describe('Construction', () => {
+    const exampleConfig = {
+      connectionString: 'some-conn-str',
+      topicName: 'unit-test-topic',
+    };
 
-  it('Should export: KafkaEventWriter', () => {
-    expect(lib.KafkaEventWriter).to.equal(require('../lib/kafka-event-writer'));
-  });
-
-  it('Should export: KafkaEventWriterOptions', () => {
-    expect(lib.KafkaEventWriterOptions).to.equal(require('../lib/kafka-event-writer-options'));
+    it('Should succeed with valid options object', () => {
+      expect(() => new lib.KafkaEventWriter(exampleConfig)).to.not.throw(Error);
+    });
   });
 });
