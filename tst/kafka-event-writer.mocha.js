@@ -15,6 +15,9 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const expect = chai.expect;
 chai.use(chaiAsPromised);
+const KafkaEventWriter = lib.KafkaEventWriter;
+const AggregateEvent = require('eventsauce').AggregateEvent;
+const JournalEntry = require('eventsauce').JournalEntry;
 
 describe('KafkaEventWriter', () => {
   describe('Construction', () => {
@@ -36,7 +39,7 @@ describe('KafkaEventWriter', () => {
      * Build new instance of KafkaEventWriter
      */
     beforeEach(() => {
-      instance = new lib.KafkaEventWriter({
+      instance = new KafkaEventWriter({
         connectionString: config.get('build.testing.kafkaConnection'),
         topicName: config.get('build.testing.kafkaTopic'),
       });
@@ -56,6 +59,48 @@ describe('KafkaEventWriter', () => {
             return instance.close();
           });
       }).to.not.throw(Error);
+    });
+
+    describe('write', () => {
+      it('Should succeed with valid input', () => {
+        return expect(
+          instance.write(new JournalEntry({
+            aggregateType: 'some-agg',
+            aggregateKey: 'some-key',
+            revision: 5,
+            event: new AggregateEvent('some-event', {
+              foo: 'bar'
+            })
+          }))).to.eventually.be.fulfilled;
+      });
+      it('Should fail with null input', () => {
+        expect(() => {
+          instance.write(null);
+        }).to.throw(Error);
+      });
+      it('Should fail when not running', () => {
+        expect(() => {
+          const alternate = new KafkaEventWriter({
+            connectionString: 'some-conn-str',
+            topicName: 'unit-test-topic',
+          });
+          alternate.write(new JournalEntry({
+            aggregateType: 'some-agg',
+            aggregateKey: 'some-key',
+            revision: 5,
+            event: new AggregateEvent('some-event', {
+              foo: 'bar'
+            })
+          }));
+        }).to.throw(Error);
+      });
+      it('Should fail with non-JournalEntry input', () => {
+        expect(() => {
+          instance.write({
+            foo: 'bar',
+          });
+        }).to.throw(Error);
+      });
     });
 
     /**
