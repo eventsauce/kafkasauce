@@ -43,7 +43,6 @@ describe('KafkaEventReader', () => {
      * Build new instance of KafkaEventReader
      */
     beforeEach(() => {
-      console.log('beforeEach');
       instance = new KafkaEventReader({
         connectionString: config.get('build.testing.kafkaConnection'),
         topicName: config.get('build.testing.kafkaTopic'),
@@ -53,9 +52,7 @@ describe('KafkaEventReader', () => {
     });
 
     it('Open twice should throw exception', () => {
-        console.log('Now test');
       expect(() => {
-        console.log('Now callback');
         instance.open();
       }).to.throw(Error);
     });
