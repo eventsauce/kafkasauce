@@ -6,7 +6,6 @@
  **/
  'use strict';
 
-const buildBundle = require('./bld/build-babel');
 const documentation = require('./bld/documentation');
 const instrument = require('./bld/instrument-coverage');
 const lint = require('./bld/lint');
@@ -19,8 +18,7 @@ gulp.task('lint-lib', lint);
 gulp.task('lint-tests', lintTests);
 gulp.task('instrument-coverage', instrument);
 gulp.task('unit-test', ['instrument-coverage'], test);
-gulp.task('build-bundle', buildBundle);
 gulp.task('lint', ['lint-lib', 'lint-tests']);
-gulp.task('full-build', ['documentation', 'lint', 'unit-test', 'build-bundle']);
+gulp.task('full-build', ['documentation', 'lint', 'unit-test']);
 
 gulp.task('default', ['full-build']);
