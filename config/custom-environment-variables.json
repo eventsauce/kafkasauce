@@ -1,5 +1,7 @@
 {
-  "testing": {
-    "kafkaConnection": "EVENTSAUCE_KAFKA_TST"
+  "build": {
+    "testing": {
+      "kafkaConnection": "EVENTSAUCE_KAFKA_TST"
+    }
   }
 }
