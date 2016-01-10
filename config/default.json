@@ -9,10 +9,10 @@
             "mangleNames": false,
             
             // Name of browserified, babelified output file.
-            "outputFile": "eventsauce.js",
+            "outputFile": "kafkasauce.js",
             
             // Name of browserified, babelified, uglified output file.
-            "outputFileMinified": "eventsauce.min.js",
+            "outputFileMinified": "kafkasauce.min.js",
             
             // Directory to write files to
             "outputPath": "./dist",
