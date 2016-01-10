@@ -34,7 +34,6 @@
     "chai": "^3.4.1",
     "chai-as-promised": "^5.2.0",
     "config": "^1.17.1",
-    "esdoc-es7-plugin": "0.0.3",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^3.1.0",
     "eslint-plugin-react": "^3.11.3",
