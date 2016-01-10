@@ -41,7 +41,7 @@
         // Unit-testing
         "testing": {
             "findPattern": "./tst/**/*.mocha.js",
-            "kafkaConnection": "localhost:9092",
+            "kafkaConnection": "192.168.99.100:9092",
             "kafkaTopic": "unit-test-topic",
             "coverage": {
                 // % of code to cover with tests
