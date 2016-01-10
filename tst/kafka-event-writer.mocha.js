@@ -69,8 +69,8 @@ describe('KafkaEventWriter', () => {
             aggregateKey: 'some-key',
             revision: 5,
             event: new AggregateEvent('some-event', {
-              foo: 'bar'
-            })
+              foo: 'bar',
+            }),
           }))).to.eventually.be.fulfilled;
       });
       it('Should fail with null input', () => {
@@ -89,8 +89,8 @@ describe('KafkaEventWriter', () => {
             aggregateKey: 'some-key',
             revision: 5,
             event: new AggregateEvent('some-event', {
-              foo: 'bar'
-            })
+              foo: 'bar',
+            }),
           }));
         }).to.throw(Error);
       });
