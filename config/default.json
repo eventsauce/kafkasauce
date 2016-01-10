@@ -68,6 +68,8 @@
         // Unit-testing
         "testing": {
             "findPattern": "./tst/**/*.js",
+            "kafkaConnection": "localhost:9092",
+            "kafkaTopic": "unit-test-topic",
             "coverage": {
                 // % of code to cover with tests
                 "enforceThreshold": 90,
