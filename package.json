@@ -49,6 +49,7 @@
     "isparta": "^4.0.0",
     "sinon": "^1.17.2",
     "sprintf-js": "^1.0.3",
+    "uuid": "^2.0.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },

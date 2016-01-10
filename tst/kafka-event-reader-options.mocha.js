@@ -16,6 +16,7 @@ describe('KafkaEventReaderOptions', () => {
     const exampleConfig = {
       connectionString: 'some-conn-str',
       topicName: 'unit-test-topic',
+      groupId: 'some-group',
     };
 
     it('Should succeed with valid options object', () => {
@@ -34,6 +35,11 @@ describe('KafkaEventReaderOptions', () => {
     it('Should set topicName property', () => {
       const instance = new lib.KafkaEventReaderOptions(exampleConfig);
       expect(instance.topicName).to.equal(exampleConfig.topicName);
+    });
+
+    it('Should set groupId property', () => {
+      const instance = new lib.KafkaEventReaderOptions(exampleConfig);
+      expect(instance.groupId).to.equal(exampleConfig.groupId);
     });
 
     it('Should fail if any options property is missing', () => {

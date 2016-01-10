@@ -13,7 +13,11 @@ const expect = chai.expect;
 
 describe('Library Exports', () => {
   it('Should export correct number of symbols', () => {
-    expect(Object.keys(lib).length).to.equal(3);
+    expect(Object.keys(lib).length).to.equal(4);
+  });
+
+  it('Should export: KafkaEventReader', () => {
+    expect(lib.KafkaEventReader).to.equal(require('../lib/kafka-event-reader'));
   });
 
   it('Should export: KafkaEventReaderOptions', () => {
