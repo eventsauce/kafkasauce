@@ -10,13 +10,17 @@
 const lib = require('../lib');
 const chai = require('chai');
 const expect = chai.expect;
+const BoundedContext = require('eventsauce').BoundedContext;
 
 describe('KafkaEventReaderOptions', () => {
   describe('Construction', () => {
+    const context = new BoundedContext();
+
     const exampleConfig = {
       connectionString: 'some-conn-str',
       topicName: 'unit-test-topic',
       groupId: 'some-group',
+      context,
     };
 
     it('Should succeed with valid options object', () => {
@@ -40,6 +44,11 @@ describe('KafkaEventReaderOptions', () => {
     it('Should set groupId property', () => {
       const instance = new lib.KafkaEventReaderOptions(exampleConfig);
       expect(instance.groupId).to.equal(exampleConfig.groupId);
+    });
+
+    it('Should set context property', () => {
+      const instance = new lib.KafkaEventReaderOptions(exampleConfig);
+      expect(instance.context).to.equal(exampleConfig.context);
     });
 
     it('Should fail if any options property is missing', () => {

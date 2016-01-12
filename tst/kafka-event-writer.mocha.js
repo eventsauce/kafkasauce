@@ -19,6 +19,53 @@ const KafkaEventWriter = lib.KafkaEventWriter;
 const AggregateEvent = require('eventsauce').AggregateEvent;
 const JournalEntry = require('eventsauce').JournalEntry;
 
+class ExampleEvent extends AggregateEvent {
+
+  /**
+   * Initialize a new instance of the event.
+   */
+  constructor(input) {
+    super();
+
+    if (input) {
+      this._time = input.time;
+    }
+  }
+
+  /**
+   * Creation time
+   */
+  get time() {
+    return this._time;
+  }
+
+  /**
+   * Get the event type of this event.
+   * @returns {String}                    - Name of event type.
+   **/
+  get eventType() {
+    return 'example';
+  }
+  /**
+   * Parse the event from an object definition.
+   * @param {Object} object               - Object to parse
+   * @returns {AggregateEvent}            - Parsed event
+   */
+  static fromObject(object) {
+    return new ExampleEvent(object);
+  }
+
+  /**
+   * Convert the current instance to an object
+   * @returns {Object}                    - Object for serialization
+   */
+  toObject() {
+    return {
+      time: this.time,
+    };
+  }
+}
+
 describe('KafkaEventWriter', () => {
   describe('Construction', () => {
     const exampleConfig = {
@@ -68,8 +115,8 @@ describe('KafkaEventWriter', () => {
             aggregateType: 'some-agg',
             aggregateKey: 'some-key',
             revision: 5,
-            event: new AggregateEvent('some-event', {
-              foo: 'bar',
+            event: new ExampleEvent({
+              time: 1,
             }),
           }))).to.eventually.be.fulfilled;
       });
@@ -88,8 +135,8 @@ describe('KafkaEventWriter', () => {
             aggregateType: 'some-agg',
             aggregateKey: 'some-key',
             revision: 5,
-            event: new AggregateEvent('some-event', {
-              foo: 'bar',
+            event: new ExampleEvent({
+              time: 2,
             }),
           }));
         }).to.throw(Error);

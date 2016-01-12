@@ -37,7 +37,7 @@
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^3.1.0",
     "eslint-plugin-react": "^3.11.3",
-    "eventsauce": "0.0.5",
+    "eventsauce": "^0.0.7",
     "gulp": "^3.9.0",
     "gulp-esdoc": "^0.2.0",
     "gulp-eslint": "^1.1.1",
@@ -54,10 +54,13 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "peerDependencies": {
-    "eventsauce": "^0.0.5"
+    "eventsauce": "^0.0.7"
   },
   "dependencies": {
-    "no-kafka": "^0.1.9",
+    "config": "^1.19.0",
+    "debug": "^2.2.0",
+    "eslint-plugin-react": "^3.15.0",
+    "no-kafka": "^0.2.3",
     "sprintf-js": "^1.0.3"
   }
 }

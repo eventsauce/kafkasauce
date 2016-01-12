@@ -17,8 +17,64 @@ const expect = chai.expect;
 chai.use(chaiAsPromised);
 const KafkaEventReader = lib.KafkaEventReader;
 const uuid = require('uuid');
-// const AggregateEvent = require('eventsauce').AggregateEvent;
-// const JournalEntry = require('eventsauce').JournalEntry;
+const kafka = require('no-kafka');
+const AggregateEvent = require('eventsauce').AggregateEvent;
+const BoundedContext = require('eventsauce').BoundedContext;
+const JournalEntry = require('eventsauce').JournalEntry;
+
+class ExampleEvent extends AggregateEvent {
+
+  /**
+   * Initialize a new instance of the event.
+   */
+  constructor(input) {
+    super();
+
+    if (input) {
+      this._time = input.time;
+    }
+  }
+
+  /**
+   * Creation time
+   */
+  get time() {
+    return this._time;
+  }
+
+  /**
+   * Get the event type of this event.
+   * @returns {String}                    - Name of event type.
+   **/
+  get eventType() {
+    return 'example';
+  }
+  /**
+   * Parse the event from an object definition.
+   * @param {Object} object               - Object to parse
+   * @returns {AggregateEvent}            - Parsed event
+   */
+  static fromObject(object) {
+    return new ExampleEvent(object);
+  }
+
+  /**
+   * Convert the current instance to an object
+   * @returns {Object}                    - Object for serialization
+   */
+  toObject() {
+    return {
+      time: this.time,
+    };
+  }
+}
+
+class ExampleContext extends BoundedContext {
+  constructor() {
+    super();
+    this.defineEvent('example', ExampleEvent.fromObject);
+  }
+}
 
 describe('KafkaEventReader', () => {
   describe('Construction', () => {
@@ -26,6 +82,7 @@ describe('KafkaEventReader', () => {
       connectionString: 'some-conn-str',
       topicName: 'unit-test-topic',
       groupId: 'some-group-id',
+      context: new ExampleContext(),
     };
 
     it('Should succeed with valid options object', () => {
@@ -47,24 +104,103 @@ describe('KafkaEventReader', () => {
         connectionString: config.get('build.testing.kafkaConnection'),
         topicName: config.get('build.testing.kafkaTopic'),
         groupId: uuid.v4(),
+        context: new ExampleContext(),
       });
       return instance.open();
     });
 
-    it('Open twice should throw exception', () => {
-      expect(() => {
-        instance.open();
-      }).to.throw(Error);
+    describe('Functional consistency', () => {
+      it('Open twice should throw exception', () => {
+        expect(() => {
+          instance.open();
+        }).to.throw(Error);
+      });
+
+      it('Close twice should succeed silently', () => {
+        return expect(() => {
+          return instance.close()
+            .then(() => {
+              return instance.close();
+            });
+        }).to.not.throw(Error);
+      });
     });
 
-    it('Close twice should succeed silently', () => {
-      return expect(() => {
-        return instance.close()
-          .then(() => {
-            return instance.close();
-          });
-      }).to.not.throw(Error);
+    describe('Message consumption', () => {
+      let producer = null;
+
+      beforeEach(() => {
+        producer = new kafka.Producer({
+          connectionString: config.get('build.testing.kafkaConnection'),
+        });
+
+        return producer.init();
+      });
+
+      it('Should recieve messages from Kafka', function runner(done) {
+        const journalEntry = new JournalEntry({
+          aggregateType: 'some-agg',
+          aggregateKey: 'some-key',
+          revision: 1234,
+          event: new ExampleEvent({
+            time: Date.now(),
+          }),
+        });
+
+        instance.addMessageHandlerCallback((entry) => {
+          done();
+          return Promise.resolve();
+        });
+
+        producer.send({
+          topic: config.get('build.testing.kafkaTopic'),
+          partitionId: 0,
+          message: {
+            value: JSON.stringify(journalEntry.toObject()),
+          },
+        });
+      });
+
+      it('Should execute handlers in registration order', function runner(done) {
+        const journalEntry = new JournalEntry({
+          aggregateType: 'some-agg',
+          aggregateKey: 'some-key',
+          revision: 1234,
+          event: new ExampleEvent({
+            time: Date.now(),
+          }),
+        });
+
+        let first = false;
+        instance.addMessageHandlerCallback((entry) => {
+          console.log('handler 1');
+          first = true;
+          return Promise.resolve();
+        });
+        instance.addMessageHandlerCallback((entry) => {
+          console.log('handler 2');
+          if (first) {
+            done();
+          } else {
+            done('Executed out of sequence. Second handler called before first');
+          }
+          return Promise.resolve();
+        });
+
+        producer.send({
+          topic: config.get('build.testing.kafkaTopic'),
+          partitionId: 0,
+          message: {
+            value: JSON.stringify(journalEntry.toObject()),
+          },
+        });
+      });
+
+      afterEach(() => {
+        return producer.end();
+      });
     });
+
     /**
      * Tear down the instance
      */
