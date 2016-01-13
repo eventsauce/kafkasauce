@@ -49,6 +49,7 @@ class ExampleEvent extends AggregateEvent {
   get eventType() {
     return 'example';
   }
+
   /**
    * Parse the event from an object definition.
    * @param {Object} object               - Object to parse
@@ -89,6 +90,11 @@ describe('KafkaEventReader', () => {
       expect(() => {
         (new KafkaEventReader(exampleConfig)).toString();
       }).to.not.throw(Error);
+    });
+    it('Should fail with null options object', () => {
+      expect(() => {
+        (new KafkaEventReader(null)).toString();
+      }).to.throw(Error);
     });
   });
 
@@ -135,6 +141,18 @@ describe('KafkaEventReader', () => {
         });
 
         return producer.init();
+      });
+
+      it('Should fail when passing a null callback for registration', () => {
+        expect(() => {
+          instance.addMessageHandlerCallback(null);
+        }).to.throw(Error);
+      });
+
+      it('Should fail when passing a non-func callback for registration', () => {
+        expect(() => {
+          instance.addMessageHandlerCallback(1234);
+        }).to.throw(Error);
       });
 
       it('Should recieve messages from Kafka', function runner(done) {
@@ -233,7 +251,6 @@ describe('KafkaEventReader', () => {
         });
       });
 
-
       it('Should run handle non-thenable result correctly', function runner(done) {
         const journalEntry = new JournalEntry({
           aggregateType: 'some-agg',
@@ -253,9 +270,41 @@ describe('KafkaEventReader', () => {
         instance.addMessageHandlerCallback(() => {
           if (first) {
             done();
+            return Promise.resolve();
           } else {
-            done('Should have called the other handler first. Only called the second.');
+            done('Did not call first handler');
+            return Promise.reject();
           }
+        });
+
+        producer.send({
+          topic: config.get('build.testing.kafkaTopic'),
+          partitionId: 0,
+          message: {
+            value: JSON.stringify(journalEntry.toObject()),
+          },
+        });
+      });
+
+      it('Should run handle exception during promise gen. correctly', function runner(done) {
+        const journalEntry = new JournalEntry({
+          aggregateType: 'some-agg',
+          aggregateKey: 'some-key',
+          revision: 1234,
+          eventType: 'exampleEvent',
+          eventData: {
+            time: Date.now(),
+          },
+        });
+
+        instance.addMessageHandlerCallback(() => {
+          throw new Error('Should explode!');
+        });
+        instance.addMessageHandlerCallback(() => {
+          done('Should never call this');
+        });
+        instance.on('error', () => {
+          done();
         });
 
         producer.send({
