@@ -166,8 +166,12 @@ describe('KafkaEventReader', () => {
           },
         });
 
+        let doneLatch = false;
         instance.addMessageHandlerCallback(() => {
-          done();
+          if (!doneLatch) {
+            done();
+            doneLatch = true;
+          }
           return Promise.resolve();
         });
 
@@ -192,13 +196,17 @@ describe('KafkaEventReader', () => {
         });
 
         let first = false;
+        let doneLatch = false;
         instance.addMessageHandlerCallback(() => {
           first = true;
           return Promise.resolve();
         });
         instance.addMessageHandlerCallback(() => {
           if (first) {
-            done();
+            if (!doneLatch) {
+              done();
+              doneLatch = true;
+            }
           } else {
             done('Executed out of sequence. Second handler called before first');
           }
@@ -226,9 +234,13 @@ describe('KafkaEventReader', () => {
         });
 
         let first = false;
+        let doneLatch = false;
         instance.on('error', () => {
           if (first) {
-            done();
+            if (!doneLatch) {
+              done();
+              doneLatch = true;
+            }
           } else {
             done('Error: Should have called handler first before failing...');
           }
@@ -263,13 +275,17 @@ describe('KafkaEventReader', () => {
         });
 
         let first = false;
+        let doneLatch = false;
         instance.addMessageHandlerCallback(() => {
           first = true;
           return 'foo';
         });
         instance.addMessageHandlerCallback(() => {
           if (first) {
-            done();
+            if (!doneLatch) {
+              done();
+              doneLatch = true;
+            }
             return Promise.resolve();
           }
           done('Did not call first handler');
@@ -296,6 +312,7 @@ describe('KafkaEventReader', () => {
           },
         });
 
+        let doneLatch = false;
         instance.addMessageHandlerCallback(() => {
           throw new Error('Should explode!');
         });
@@ -303,7 +320,10 @@ describe('KafkaEventReader', () => {
           done('Should never call this');
         });
         instance.on('error', () => {
-          done();
+          if (!doneLatch) {
+            done();
+            doneLatch = true;
+          }
         });
 
         producer.send({
