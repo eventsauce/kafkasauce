@@ -142,9 +142,10 @@ describe('KafkaEventReader', () => {
           aggregateType: 'some-agg',
           aggregateKey: 'some-key',
           revision: 1234,
-          event: new ExampleEvent({
+          eventType: 'exampleEvent',
+          eventData: {
             time: Date.now(),
-          }),
+          },
         });
 
         instance.addMessageHandlerCallback(() => {
@@ -166,9 +167,10 @@ describe('KafkaEventReader', () => {
           aggregateType: 'some-agg',
           aggregateKey: 'some-key',
           revision: 1234,
-          event: new ExampleEvent({
+          eventType: 'exampleEvent',
+          eventData: {
             time: Date.now(),
-          }),
+          },
         });
 
         let first = false;
@@ -199,9 +201,10 @@ describe('KafkaEventReader', () => {
           aggregateType: 'some-agg',
           aggregateKey: 'some-key',
           revision: 1234,
-          event: new ExampleEvent({
+          eventType: 'exampleEvent',
+          eventData: {
             time: Date.now(),
-          }),
+          },
         });
 
         let first = false;
@@ -236,9 +239,10 @@ describe('KafkaEventReader', () => {
           aggregateType: 'some-agg',
           aggregateKey: 'some-key',
           revision: 1234,
-          event: new ExampleEvent({
+          eventType: 'exampleEvent',
+          eventData: {
             time: Date.now(),
-          }),
+          },
         });
 
         let first = false;

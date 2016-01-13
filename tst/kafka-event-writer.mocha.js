@@ -115,9 +115,10 @@ describe('KafkaEventWriter', () => {
             aggregateType: 'some-agg',
             aggregateKey: 'some-key',
             revision: 5,
-            event: new ExampleEvent({
-              time: 1,
-            }),
+            eventType: 'exampleEvent',
+            eventData: {
+              time: Date.now(),
+            },
           }))).to.eventually.be.fulfilled;
       });
       it('Should fail with null input', () => {
@@ -135,9 +136,10 @@ describe('KafkaEventWriter', () => {
             aggregateType: 'some-agg',
             aggregateKey: 'some-key',
             revision: 5,
-            event: new ExampleEvent({
-              time: 2,
-            }),
+            eventType: 'exampleEvent',
+            eventData: {
+              time: Date.now(),
+            },
           }));
         }).to.throw(Error);
       });
