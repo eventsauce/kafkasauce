@@ -271,10 +271,9 @@ describe('KafkaEventReader', () => {
           if (first) {
             done();
             return Promise.resolve();
-          } else {
-            done('Did not call first handler');
-            return Promise.reject();
           }
+          done('Did not call first handler');
+          return Promise.reject();
         });
 
         producer.send({
@@ -317,7 +316,7 @@ describe('KafkaEventReader', () => {
       });
 
       afterEach(() => {
-        return producer.end();
+        return producer.end().catch(() => Promise.resolve());
       });
     });
 
@@ -325,7 +324,7 @@ describe('KafkaEventReader', () => {
      * Tear down the instance
      */
     afterEach(() => {
-      return instance.close();
+      return instance.close().catch(() => Promise.resolve());
     });
   });
 });
