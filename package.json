@@ -1,6 +1,6 @@
 {
   "name": "kafkasauce",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Module to allow eventsauce to leverage Kafka messaging infrastructure.",
   "main": "index.js",
   "scripts": {
