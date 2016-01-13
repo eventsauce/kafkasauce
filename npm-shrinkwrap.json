@@ -1123,8 +1123,8 @@
       "resolved": "https://registry.npmjs.org/events/-/events-1.1.0.tgz"
     },
     "eventsauce": {
-      "version": "0.0.5",
-      "from": "eventsauce@*",
+      "version": "0.0.7",
+      "from": "eventsauce@latest",
       "dependencies": {
         "amdefine": {
           "version": "1.0.0",
@@ -1149,7 +1149,14 @@
         "babel-core": {
           "version": "6.4.0",
           "from": "babel-core@>=6.3.17 <7.0.0",
-          "resolved": "https://registry.npmjs.org/babel-core/-/babel-core-6.4.0.tgz"
+          "resolved": "https://registry.npmjs.org/babel-core/-/babel-core-6.4.0.tgz",
+          "dependencies": {
+            "minimatch": {
+              "version": "2.0.10",
+              "from": "minimatch@>=2.0.3 <3.0.0",
+              "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.10.tgz"
+            }
+          }
         },
         "babel-generator": {
           "version": "6.4.2",
@@ -1330,11 +1337,6 @@
           "version": "1.1.0",
           "from": "loose-envify@>=1.0.0 <2.0.0",
           "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.1.0.tgz"
-        },
-        "minimatch": {
-          "version": "2.0.10",
-          "from": "minimatch@>=2.0.3 <3.0.0",
-          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.10.tgz"
         },
         "minimist": {
           "version": "1.2.0",
@@ -2622,9 +2624,9 @@
       "resolved": "https://registry.npmjs.org/nice-simple-logger/-/nice-simple-logger-0.0.3.tgz"
     },
     "no-kafka": {
-      "version": "0.2.3",
-      "from": "no-kafka@0.2.3",
-      "resolved": "https://registry.npmjs.org/no-kafka/-/no-kafka-0.2.3.tgz"
+      "version": "0.2.4",
+      "from": "no-kafka@0.2.4",
+      "resolved": "https://registry.npmjs.org/no-kafka/-/no-kafka-0.2.4.tgz"
     },
     "nomnomnomnom": {
       "version": "2.0.1",
