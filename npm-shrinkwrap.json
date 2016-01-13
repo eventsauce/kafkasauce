@@ -1123,8 +1123,8 @@
       "resolved": "https://registry.npmjs.org/events/-/events-1.1.0.tgz"
     },
     "eventsauce": {
-      "version": "0.0.7",
-      "from": "eventsauce@latest",
+      "version": "0.0.8",
+      "from": "eventsauce@0.0.8",
       "dependencies": {
         "amdefine": {
           "version": "1.0.0",
@@ -3053,7 +3053,8 @@
       "dependencies": {
         "debug": {
           "version": "1.0.2",
-          "from": "debug@1.0.2"
+          "from": "debug@1.0.2",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-1.0.2.tgz"
         },
         "escape-html": {
           "version": "1.0.1",
@@ -3061,7 +3062,8 @@
         },
         "ms": {
           "version": "0.6.2",
-          "from": "ms@0.6.2"
+          "from": "ms@0.6.2",
+          "resolved": "https://registry.npmjs.org/ms/-/ms-0.6.2.tgz"
         }
       }
     },
@@ -3087,7 +3089,8 @@
       "dependencies": {
         "escape-html": {
           "version": "1.0.1",
-          "from": "escape-html@1.0.1"
+          "from": "escape-html@1.0.1",
+          "resolved": "https://registry.npmjs.org/escape-html/-/escape-html-1.0.1.tgz"
         }
       }
     },
@@ -3210,7 +3213,8 @@
       "dependencies": {
         "readable-stream": {
           "version": "1.1.13",
-          "from": "readable-stream@>=1.1.8 <1.2.0"
+          "from": "readable-stream@1.1.13",
+          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-1.1.13.tgz"
         }
       }
     },

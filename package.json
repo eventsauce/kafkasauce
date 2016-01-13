@@ -60,6 +60,7 @@
     "config": "^1.19.0",
     "debug": "^2.2.0",
     "eslint-plugin-react": "^3.15.0",
+    "eventsauce": "0.0.8",
     "no-kafka": "^0.2.4",
     "sprintf-js": "^1.0.3"
   }
