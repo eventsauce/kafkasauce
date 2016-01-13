@@ -147,7 +147,7 @@ describe('KafkaEventReader', () => {
           }),
         });
 
-        instance.addMessageHandlerCallback((entry) => {
+        instance.addMessageHandlerCallback(() => {
           done();
           return Promise.resolve();
         });
@@ -172,19 +172,86 @@ describe('KafkaEventReader', () => {
         });
 
         let first = false;
-        instance.addMessageHandlerCallback((entry) => {
-          console.log('handler 1');
+        instance.addMessageHandlerCallback(() => {
           first = true;
           return Promise.resolve();
         });
-        instance.addMessageHandlerCallback((entry) => {
-          console.log('handler 2');
+        instance.addMessageHandlerCallback(() => {
           if (first) {
             done();
           } else {
             done('Executed out of sequence. Second handler called before first');
           }
           return Promise.resolve();
+        });
+
+        producer.send({
+          topic: config.get('build.testing.kafkaTopic'),
+          partitionId: 0,
+          message: {
+            value: JSON.stringify(journalEntry.toObject()),
+          },
+        });
+      });
+
+      it('Should run handle rejections correctly', function runner(done) {
+        const journalEntry = new JournalEntry({
+          aggregateType: 'some-agg',
+          aggregateKey: 'some-key',
+          revision: 1234,
+          event: new ExampleEvent({
+            time: Date.now(),
+          }),
+        });
+
+        let first = false;
+        instance.on('error', () => {
+          if (first) {
+            done();
+          } else {
+            done('Error: Should have called handler first before failing...');
+          }
+        });
+
+        instance.addMessageHandlerCallback(() => {
+          first = true;
+          return Promise.reject();
+        });
+        instance.addMessageHandlerCallback(() => {
+          done('Should never touch second handler!');
+        });
+
+        producer.send({
+          topic: config.get('build.testing.kafkaTopic'),
+          partitionId: 0,
+          message: {
+            value: JSON.stringify(journalEntry.toObject()),
+          },
+        });
+      });
+
+
+      it('Should run handle non-thenable result correctly', function runner(done) {
+        const journalEntry = new JournalEntry({
+          aggregateType: 'some-agg',
+          aggregateKey: 'some-key',
+          revision: 1234,
+          event: new ExampleEvent({
+            time: Date.now(),
+          }),
+        });
+
+        let first = false;
+        instance.addMessageHandlerCallback(() => {
+          first = true;
+          return 'foo';
+        });
+        instance.addMessageHandlerCallback(() => {
+          if (first) {
+            done();
+          } else {
+            done('Should have called the other handler first. Only called the second.');
+          }
         });
 
         producer.send({
